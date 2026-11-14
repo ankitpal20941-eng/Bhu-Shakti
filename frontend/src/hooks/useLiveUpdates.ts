@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { API_BASE } from "../lib/api";
+import { getApiBase } from "../lib/api";
 import { useSession } from "../store/session";
 import { useUi } from "../store/ui";
 
@@ -18,7 +18,7 @@ export function useLiveUpdates() {
   useEffect(() => {
     if (!token) return;
     let closed = false;
-    const source = new EventSource(`${API_BASE}/api/v1/stream?token=${encodeURIComponent(token)}`);
+    const source = new EventSource(`${getApiBase()}/api/v1/stream?token=${encodeURIComponent(token)}`);
     source.onopen = () => setStatus("live");
     const onChange = () => {
       queryClient.invalidateQueries();

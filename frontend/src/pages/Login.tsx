@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
-import { api } from "../lib/api";
+import { ArrowRight, Eye, EyeOff, Loader2, Server } from "lucide-react";
+import { api, getApiBase, setApiBase } from "../lib/api";
 import { useSession } from "../store/session";
 import type { User } from "../lib/types";
 import { BhuShaktiLogo, BhuShaktiLogoMark } from "../components/BhuShaktiLogo";
@@ -28,6 +28,9 @@ export default function Login() {
   const setSession = useSession((s) => s.setSession);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfig, setShowConfig] = useState(false);
+  const [customApiUrl, setCustomApiUrl] = useState(getApiBase());
+  const [configSaved, setConfigSaved] = useState(false);
   const { register, handleSubmit, setValue, formState } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { email: "", password: "" },
@@ -133,6 +136,59 @@ export default function Login() {
               Sign in <ArrowRight size={16} />
             </button>
           </form>
+
+          {/* Render Backend Connection & Endpoint Configuration */}
+          <div className="mt-4 pt-3 border-t border-line/60">
+            <button
+              type="button"
+              onClick={() => setShowConfig(!showConfig)}
+              className="flex items-center justify-between w-full text-xs text-muted hover:text-ink font-medium"
+            >
+              <span className="flex items-center gap-1.5 truncate">
+                <Server size={13} className="text-forest shrink-0" />
+                <span>Backend API:</span>
+                <span className="text-ink font-mono text-[11px] truncate">{getApiBase() || "(relative /)"}</span>
+              </span>
+              <span className="text-[11px] text-forest underline shrink-0 ml-2">{showConfig ? "Hide" : "Change"}</span>
+            </button>
+
+            {showConfig && (
+              <div className="mt-2.5 p-3 rounded-xl bg-surface-2/70 border border-line text-xs space-y-2">
+                <label className="text-[11px] font-semibold text-ink block">
+                  Backend Web Service URL (on Render)
+                </label>
+                <p className="text-[10px] text-muted leading-relaxed">
+                  Enter your Render backend URL (e.g. <span className="font-mono">https://bhushakti-backend-xxxx.onrender.com</span>) copied from the top of your <strong>bhushakti-backend</strong> service on the Render dashboard.
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    type="url"
+                    value={customApiUrl}
+                    onChange={(e) => { setCustomApiUrl(e.target.value); setConfigSaved(false); }}
+                    placeholder="https://bhushakti-backend.onrender.com"
+                    className="input text-xs py-1 px-2.5 flex-1"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setApiBase(customApiUrl);
+                      setConfigSaved(true);
+                      setError(null);
+                      accounts.refetch();
+                    }}
+                    className="btn btn-primary text-xs py-1 px-3 whitespace-nowrap"
+                  >
+                    Save & Test
+                  </button>
+                </div>
+                {configSaved && (
+                  <p className="text-[11px] text-safe font-semibold flex items-center gap-1">
+                    ✓ Updated! Reconnecting to API...
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
 
           {accounts.data ? (
             <div className="mt-7 rounded-xl border border-line bg-surface p-3">

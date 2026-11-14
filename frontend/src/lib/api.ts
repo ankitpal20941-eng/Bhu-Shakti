@@ -1,6 +1,25 @@
 import { useSession } from "../store/session";
 
-export const API_BASE = import.meta.env.VITE_API_BASE ?? "";
+export function getApiBase(): string {
+  if (typeof window !== "undefined") {
+    const stored = localStorage.getItem("bhushakti_api_base");
+    if (stored !== null && stored !== "") return stored.trim().replace(/\/+$/, "");
+  }
+  return (import.meta.env.VITE_API_BASE ?? "").replace(/\/+$/, "");
+}
+
+export function setApiBase(url: string): void {
+  if (typeof window !== "undefined") {
+    const trimmed = url.trim().replace(/\/+$/, "");
+    if (!trimmed) {
+      localStorage.removeItem("bhushakti_api_base");
+    } else {
+      localStorage.setItem("bhushakti_api_base", trimmed);
+    }
+  }
+}
+
+export const API_BASE = getApiBase();
 
 export class ApiError extends Error {
   status: number;
@@ -26,12 +45,23 @@ export async function api<T>(path: string, options: Options = {}): Promise<T> {
   if (json !== undefined) finalHeaders.set("Content-Type", "application/json");
   if (token) finalHeaders.set("Authorization", `Bearer ${token}`);
 
-  const response = await fetch(`${API_BASE}${path}`, {
-    ...rest,
-    headers: finalHeaders,
-    credentials: "include",
-    body: json !== undefined ? JSON.stringify(json) : rest.body,
-  });
+  const base = getApiBase();
+  let response: Response;
+  try {
+    response = await fetch(`${base}${path}`, {
+      ...rest,
+      headers: finalHeaders,
+      credentials: "include",
+      body: json !== undefined ? JSON.stringify(json) : rest.body,
+    });
+  } catch (err: any) {
+    const target = base || (typeof window !== "undefined" ? window.location.origin : "");
+    throw new ApiError(
+      0,
+      `Cannot reach backend API at ${target}. The backend may still be starting up on Render, or check your API endpoint URL below.`,
+      "network_error"
+    );
+  }
 
   if (response.status === 401 && !path.startsWith("/api/v1/auth/login") && !path.startsWith("/api/v1/public")) {
     useSession.getState().clear();
