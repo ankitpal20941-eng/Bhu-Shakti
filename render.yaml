@@ -44,12 +44,11 @@ services:
 
   # ----------------------------------------------------------------------------
   # 2. Vite + React Frontend Static Site
-  # Note: Static sites are deployed globally on Render CDN (no 'region' field).
+  # Note: Static sites are served globally on Render CDN (no 'region' or 'plan' field).
   # ----------------------------------------------------------------------------
   - type: web
     name: bhushakti-frontend
     runtime: static
-    plan: free
     autoDeploy: true
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/dist
