@@ -18,6 +18,10 @@ PROJECT_DIR = BACKEND_DIR.parent
 DATA_DIR = BACKEND_DIR / "data"
 STORAGE_DIR = BACKEND_DIR / "storage"
 
+# Ensure data and storage directories always exist
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+STORAGE_DIR.mkdir(parents=True, exist_ok=True)
+
 
 def _load_dotenv(path: Path) -> None:
     """Minimal .env reader (no external dependency). Existing env wins."""

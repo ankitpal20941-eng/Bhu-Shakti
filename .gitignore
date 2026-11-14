@@ -6,8 +6,10 @@ __pycache__/
 *.egg-info/
 
 # Local data and secrets
-backend/data/
-backend/storage/
+backend/data/*
+!backend/data/.gitkeep
+backend/storage/*
+!backend/storage/.gitkeep
 backend/.dev_secret
 backend/.env
 backend/tests/*.db*

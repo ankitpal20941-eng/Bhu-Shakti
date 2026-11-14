@@ -11,7 +11,7 @@ from typing import Iterator
 from sqlalchemy import Engine, create_engine, event, text
 from sqlalchemy.orm import Session, sessionmaker
 
-from .config import settings
+from .config import DATA_DIR, STORAGE_DIR, settings
 
 log = logging.getLogger("bhushakti.db")
 MIGRATIONS_DIR = Path(__file__).resolve().parent.parent / "migrations" / "versions"
@@ -20,7 +20,17 @@ MIGRATIONS_DIR = Path(__file__).resolve().parent.parent / "migrations" / "versio
 def _make_engine() -> Engine:
     url = settings.database_url
     if url.startswith("sqlite"):
-        Path("data").mkdir(exist_ok=True)
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+        STORAGE_DIR.mkdir(parents=True, exist_ok=True)
+        raw_path = url.split("?")[0]
+        for prefix in ("sqlite:////", "sqlite:///", "sqlite://"):
+            if raw_path.startswith(prefix):
+                file_part = raw_path[len(prefix):]
+                if prefix == "sqlite:////":
+                    file_part = "/" + file_part
+                if file_part and file_part != ":memory:":
+                    Path(file_part).parent.mkdir(parents=True, exist_ok=True)
+                break
         engine = create_engine(url, connect_args={"check_same_thread": False}, future=True)
 
         @event.listens_for(engine, "connect")

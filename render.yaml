@@ -13,7 +13,7 @@ services:
     plan: free
     region: oregon
     autoDeploy: true
-    buildCommand: pip install --upgrade pip && pip install -r backend/requirements.txt
+    buildCommand: pip install --upgrade pip && pip install -r backend/requirements.txt && mkdir -p backend/data backend/storage
     startCommand: python -m uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /api/v1/health
     envVars:
