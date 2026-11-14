@@ -10,6 +10,7 @@ backend/data/
 backend/storage/
 backend/.dev_secret
 backend/.env
+backend/tests/*.db*
 .env
 .env.local
 

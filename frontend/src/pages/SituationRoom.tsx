@@ -18,8 +18,9 @@ import {
   AppleGlassStat,
   DisclosurePill,
   SegmentedControl,
-  ShimmerButton,
   SpotlightCard,
+  BackgroundBeams,
+  HoverBorderGradient,
 } from "../components/aceternity";
 import {
   Alert,
@@ -105,9 +106,10 @@ export default function SituationRoom() {
 
   return (
     <div className="space-y-6">
-      {/* Top Header & Disclosures */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-2 border-b border-line">
-        <div>
+      {/* Top Header & Disclosures (Aceternity Beams & Apple Glass) */}
+      <div className="relative overflow-hidden flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 p-5 rounded-3xl bg-surface/90 dark:bg-surface/80 backdrop-blur-2xl border border-line shadow-sm">
+        <BackgroundBeams />
+        <div className="relative z-10">
           <div className="flex items-center gap-2 mb-1.5">
             <span className="flex items-center gap-1.5 text-[11px] font-semibold text-safe bg-safe/10 border border-safe/25 px-2.5 py-0.5 rounded-full">
               <Radio size={12} className="animate-pulse" />
@@ -126,15 +128,14 @@ export default function SituationRoom() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <ShimmerButton
-            variant="secondary"
+        <div className="relative z-10 flex flex-wrap items-center gap-3">
+          <HoverBorderGradient
             onClick={() => refetch()}
-            className="text-xs"
+            className="flex items-center gap-2 py-1.5 px-3.5 text-xs font-semibold cursor-pointer"
           >
-            <RefreshCw size={13} className={isLoading ? "animate-spin" : ""} />
+            <RefreshCw size={13} className={isLoading ? "animate-spin text-forest" : "text-forest"} />
             Sync Feeds
-          </ShimmerButton>
+          </HoverBorderGradient>
         </div>
       </div>
 

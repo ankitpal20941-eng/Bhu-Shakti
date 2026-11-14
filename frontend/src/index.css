@@ -74,12 +74,46 @@
   100% { left: 200%; }
 }
 
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes meteor {
+  0% { transform: rotate(215deg) translateX(0); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: rotate(215deg) translateX(-500px); opacity: 0; }
+}
+
+@keyframes radar-ripple {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
 .animate-spin-slow {
   animation: spin-slow 8s linear infinite;
 }
 
 .animate-shimmer {
   animation: shimmer 2.4s ease-in-out infinite;
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.animate-meteor-effect {
+  animation: meteor 5s linear infinite;
+}
+
+.animate-radar-ripple {
+  animation: radar-ripple 2.5s cubic-bezier(0, 0.2, 0.8, 1) infinite;
 }
 
 @layer components {

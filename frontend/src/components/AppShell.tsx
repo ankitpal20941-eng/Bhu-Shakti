@@ -36,9 +36,9 @@ const NAV: Array<{ group: string; items: NavItem[] }> = [
   {
     group: "Operations & Command",
     items: [
-      { to: "/", label: "Command Center", icon: <LayoutDashboard size={16} />, end: true },
-      { to: "/situation-room", label: "Situation Room", icon: <ShieldAlert size={16} /> },
-      { to: "/map", label: "Live Risk Map", icon: <Map size={16} /> },
+      { to: "/", label: "Command Center", icon: <LayoutDashboard size={16} />, end: true, permission: "risk:read" },
+      { to: "/situation-room", label: "Situation Room", icon: <ShieldAlert size={16} />, permission: "risk:read" },
+      { to: "/map", label: "Live Risk Map", icon: <Map size={16} />, permission: "risk:read" },
       { to: "/response", label: "Response Center", icon: <Activity size={16} />, permission: "response:read" },
       { to: "/field-teams", label: "Field Teams Cadre", icon: <Users size={16} />, permission: "teams:read" },
       { to: "/alerts", label: "Alerts", icon: <AlertTriangle size={16} />, permission: "alerts:read" },
@@ -94,6 +94,12 @@ export function AppShell() {
   useLiveUpdates();
 
   useEffect(() => applyTheme(theme), [theme]);
+
+  useEffect(() => {
+    if (user?.role === "citizen" && (window.location.pathname === "/" || window.location.pathname === "/map" || window.location.pathname === "/situation-room")) {
+      navigate("/citizen", { replace: true });
+    }
+  }, [user?.role, navigate]);
 
   // Keeps screens fresh when SSE is unavailable (LIVE UPDATES PAUSED contract).
   useQuery({
@@ -185,7 +191,7 @@ export function AppShell() {
         {sidebarOpen ? <button className="fixed inset-0 z-40 bg-charcoal/40 lg:hidden backdrop-blur-sm" onClick={() => setSidebarOpen(false)} aria-label="Close navigation overlay" /> : null}
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="no-print sticky top-0 z-30 flex min-h-[58px] items-center gap-3 border-b border-line/80 bg-surface/85 dark:bg-[#121614]/85 px-4 backdrop-blur-2xl">
+          <header className="no-print sticky top-0 z-40 flex min-h-[58px] items-center gap-3 border-b border-line/80 bg-white/95 dark:bg-[#121614]/95 px-4 backdrop-blur-2xl shadow-sm">
             <button className="btn btn-ghost btn-sm lg:hidden" onClick={() => setSidebarOpen(true)} aria-label="Open navigation">
               <Menu size={18} />
             </button>
@@ -226,12 +232,12 @@ export function AppShell() {
                 </button>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="right" className="w-72 p-2.5">
-                <div className="px-3 py-2 rounded-xl bg-surface-2/60 dark:bg-surface-2/40 border border-line/50 mb-1.5">
+              <DropdownMenuContent align="right" className="w-72 p-3 bg-white dark:bg-[#181e1a] shadow-2xl border border-stone-200 dark:border-stone-800">
+                <div className="px-3.5 py-2.5 rounded-xl bg-stone-100/90 dark:bg-stone-800/90 border border-stone-200/60 dark:border-stone-700/60 mb-2">
                   <div className="text-sm font-bold text-ink">{user?.name}</div>
                   <div className="text-xs text-muted truncate mt-0.5">{user?.email}</div>
                   <div className="mt-2">
-                    <Badge variant="default" className="text-[9px]">
+                    <Badge variant="default" className="text-[10px] uppercase font-bold tracking-wider">
                       {user?.role_label ?? user?.role}
                     </Badge>
                   </div>
@@ -239,7 +245,7 @@ export function AppShell() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={logout}
-                  className="text-critical hover:bg-critical/10 font-semibold"
+                  className="text-critical hover:bg-critical/10 font-semibold rounded-xl px-3 py-2 cursor-pointer"
                 >
                   <LogOut size={15} /> Sign out
                 </DropdownMenuItem>

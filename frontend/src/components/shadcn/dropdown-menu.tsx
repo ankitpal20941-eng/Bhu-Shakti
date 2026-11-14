@@ -60,10 +60,10 @@ export function DropdownMenuContent({
 
   return (
     <>
-      <div className="fixed inset-0 z-40" onClick={() => ctx.setOpen(false)} />
+      <div className="fixed inset-0 z-[60]" onClick={() => ctx.setOpen(false)} />
       <div
         className={cn(
-          "absolute z-50 mt-2 min-w-[12rem] rounded-2xl border border-line bg-white dark:bg-[#191f1c] p-2 text-ink shadow-2xl ring-1 ring-black/5 dark:ring-white/10 animate-scaleUp overflow-hidden",
+          "absolute z-[70] mt-2 min-w-[14rem] rounded-2xl border border-line/80 bg-white dark:bg-[#181e1a] p-2.5 text-ink shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3)] ring-1 ring-black/10 dark:ring-white/10 animate-scaleUp overflow-hidden backdrop-blur-none",
           align === "right" ? "right-0" : "left-0",
           className
         )}

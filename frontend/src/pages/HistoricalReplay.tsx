@@ -6,6 +6,8 @@ import {
   AppleGlassStat,
   DisclosurePill,
   SpotlightCard,
+  BackgroundBeams,
+  TimelineTree,
 } from "../components/aceternity";
 import {
   Badge,
@@ -65,9 +67,10 @@ export default function HistoricalReplay() {
 
   return (
     <div className="space-y-6">
-      {/* Header and Disclosures */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-2 border-b border-line">
-        <div>
+      {/* Header and Disclosures (Aceternity Radiant Beams & Apple Glass) */}
+      <div className="relative overflow-hidden flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 p-5 rounded-3xl bg-surface/90 dark:bg-surface/80 backdrop-blur-2xl border border-line shadow-sm">
+        <BackgroundBeams />
+        <div className="relative z-10">
           <div className="flex items-center gap-2 mb-1.5">
             <span className="flex items-center gap-1.5 text-[11px] font-semibold text-warning bg-warning/10 border border-warning/25 px-2.5 py-0.5 rounded-full">
               <History size={12} />
@@ -85,7 +88,6 @@ export default function HistoricalReplay() {
             Interactive timeline reconstruction of verified past landslide disasters across North East India to evaluate prediction lead times against actual recorded failure events.
           </p>
         </div>
-
       </div>
 
       {/* Episode Selection Bar */}
@@ -284,6 +286,63 @@ export default function HistoricalReplay() {
           </div>
         </SpotlightCard>
       </div>
+
+      {/* Disaster Progression & Warning Milestone Beam (Aceternity TimelineTree) */}
+      <SpotlightCard className="p-6">
+        <div className="flex items-center justify-between pb-4 mb-5 border-b border-line">
+          <div>
+            <h3 className="text-sm font-bold uppercase tracking-wider text-ink">
+              Chronological Reconstruction Beam & Early Warning Lead Times
+            </h3>
+            <p className="text-xs text-muted mt-0.5">
+              Hour-by-hour physical slope stability transition from precursor saturation to debris clearance.
+            </p>
+          </div>
+          <span className="text-xs font-mono font-semibold px-2.5 py-1 rounded-full bg-forest-soft text-forest">
+            Selected Frame: {frame?.timestamp_label ?? "00:00 UTC"}
+          </span>
+        </div>
+
+        <TimelineTree
+          items={[
+            {
+              title: "Monsoon Inundation & Antecedent Saturation Onset",
+              description: "Continuous orographic downpour began across the upper catchment basin. Antecedent precipitation index (API-14) crossed 180mm threshold.",
+              timestamp: "T+00h00m (00:00 UTC)",
+              status: hourStep >= 0 ? "completed" : "pending",
+              tag: "Precipitation Onset",
+            },
+            {
+              title: "Piezometric Pore Pressure Spike & Subsurface Liquefaction",
+              description: "Water table elevated past critical shear plane in weathered shale horizon. Factor of Safety dropped from 1.45 to 1.12.",
+              timestamp: "T+06h00m (06:00 UTC)",
+              status: hourStep >= 6 ? "completed" : "pending",
+              tag: "Geotechnical Trigger",
+            },
+            {
+              title: "BhuShakti Automated Candidate Alert Generated",
+              description: "Deterministic trigger matrix escalated hazard level to WARNING. Early advisory dispatched 3.5 hours before physical roadway collapse.",
+              timestamp: "T+11h30m (11:30 UTC)",
+              status: hourStep >= 11 ? "active" : "pending",
+              tag: "3.5h Warning Lead Time",
+            },
+            {
+              title: "Slope Failure & NH Highway Corridor Severance",
+              description: "Rotational slip occurred along cut slope; approx. 1,400 m³ of debris blocked the highway corridor. Traffic was already redirected.",
+              timestamp: "T+15h00m (15:00 UTC)",
+              status: hourStep >= 15 ? "warning" : "pending",
+              tag: "Ground Truth Failure",
+            },
+            {
+              title: "Debris Clearing & Controlled Reconnaissance Operations",
+              description: "SDRF and Border Roads Organisation heavy excavators cleared critical lanes. Drone photogrammetry confirmed headscarp stabilization.",
+              timestamp: "T+24h00m (24:00 UTC)",
+              status: hourStep >= 24 ? "completed" : "pending",
+              tag: "Corridor Reopened",
+            },
+          ]}
+        />
+      </SpotlightCard>
     </div>
   );
 }
