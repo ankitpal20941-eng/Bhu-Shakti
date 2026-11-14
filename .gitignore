@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+*.egg-info/
+
+# Local data and secrets
+backend/data/
+backend/storage/
+backend/.dev_secret
+backend/.env
+.env
+.env.local
+
+# Node / frontend build output
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Logs produced by local runs
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

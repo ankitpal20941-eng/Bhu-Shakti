@@ -1,0 +1,20 @@
+{
+  "name": "BHUSHAKTI AI — Field",
+  "short_name": "BHUSHAKTI",
+  "description": "Offline-capable landslide risk and field reporting for authorised officers.",
+  "start_url": "/field",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f5f1",
+  "theme_color": "#14532d",
+  "lang": "en-IN",
+  "categories": ["government", "productivity", "weather"],
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Report a hazard", "url": "/field", "short_name": "Report" },
+    { "name": "Citizen risk check", "url": "/citizen", "short_name": "Citizen" }
+  ]
+}

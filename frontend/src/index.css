@@ -1,0 +1,173 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: #f4f5f1;
+    --surface: #ffffff;
+    --surface-2: #edefe8;
+    --ink: #16201b;
+    --ink-muted: #58635c;
+    --line: #dde2d8;
+    --forest: #14532d;
+    --forest-soft: #e3eee5;
+    --charcoal: #1c211e;
+    --slate: #46524b;
+    --blue: #2f5d7c;
+    --risk-safe: #2f7d4f;
+    --risk-watch: #a16207;
+    --risk-warning: #c2410c;
+    --risk-critical: #b91c1c;
+    color-scheme: light;
+  }
+
+  [data-theme="dark"] {
+    --bg: #121614;
+    --surface: #191f1c;
+    --surface-2: #212824;
+    --ink: #eef2ee;
+    --ink-muted: #a3aea7;
+    --line: #2c3530;
+    --forest: #5fae7f;
+    --forest-soft: #1d2a22;
+    --charcoal: #0d100f;
+    --slate: #b9c4bd;
+    --blue: #7fb2d0;
+    --risk-safe: #4fbe7c;
+    --risk-watch: #e0b32b;
+    --risk-warning: #f08a3c;
+    --risk-critical: #f16b6b;
+    color-scheme: dark;
+  }
+
+  html, body, #root { height: 100%; }
+  body {
+    @apply bg-canvas text-ink font-sans text-base antialiased;
+  }
+  * { scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+  :focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  h1, h2, h3, h4 { @apply font-semibold tracking-tight; }
+  a { color: inherit; }
+  ::selection { background: var(--forest-soft); }
+
+  .bg-dot-pattern {
+    background-image: radial-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  [data-theme="dark"] .bg-dot-pattern {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  }
+}
+
+@keyframes spin-slow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2.4s ease-in-out infinite;
+}
+
+@layer components {
+  .card {
+    @apply bg-surface border border-line rounded-xl shadow-card;
+  }
+  .card-pad { @apply p-4; }
+  .section-title { @apply text-sm font-semibold text-ink; }
+  .eyebrow {
+    @apply text-2xs uppercase tracking-[0.12em] text-muted font-semibold;
+  }
+  .numeric { font-variant-numeric: tabular-nums; }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line bg-surface px-3 py-1.5
+           text-sm font-medium text-ink transition-colors hover:bg-surface-2 disabled:opacity-50
+           disabled:cursor-not-allowed;
+    min-height: 32px;
+  }
+  .btn-primary {
+    @apply bg-forest text-white border-forest hover:opacity-90;
+  }
+  [data-theme="dark"] .btn-primary { color: #0d1510; }
+  .btn-danger { @apply bg-critical text-white border-critical hover:opacity-90; }
+  .btn-ghost { @apply border-transparent bg-transparent hover:bg-surface-2; }
+  .btn-sm { @apply px-2 py-1 text-xs; min-height: 28px; }
+  .btn-lg { @apply px-4 py-2.5 text-base; min-height: 44px; }
+
+  .input, .select, .textarea {
+    @apply w-full rounded-lg border border-line bg-surface px-2.5 py-1.5 text-sm text-ink
+           placeholder:text-muted focus:border-subtle;
+    min-height: 34px;
+  }
+  .label { @apply block text-xs font-medium text-muted mb-1; }
+  .hint { @apply text-2xs text-muted; }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-2xs font-semibold
+           uppercase tracking-wide whitespace-nowrap;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full border border-line bg-surface-2 px-2 py-0.5
+           text-2xs font-medium text-muted;
+  }
+
+  .table-wrap { @apply overflow-x-auto; }
+  table.data { @apply w-full border-collapse text-sm; }
+  table.data th {
+    @apply sticky top-0 z-[1] bg-surface-2 text-left text-2xs uppercase tracking-wide
+           text-muted font-semibold px-3 py-2 border-b border-line whitespace-nowrap;
+  }
+  table.data td { @apply px-3 py-2 border-b border-line align-top; }
+  table.data tbody tr:hover { background: var(--surface-2); }
+
+  .sidebar-link {
+    @apply flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-slate
+           hover:bg-surface-2 hover:text-ink transition-colors;
+  }
+  .sidebar-link.active {
+    @apply bg-forest-soft text-forest font-semibold;
+  }
+  .stat-value { @apply text-2xl font-semibold numeric leading-none; }
+  .kpi-label { @apply text-2xs uppercase tracking-wide text-muted font-semibold; }
+
+  .drawer-panel {
+    @apply fixed inset-y-0 right-0 z-[60] flex w-full max-w-[520px] flex-col bg-surface
+           border-l border-line shadow-panel;
+  }
+  .modal-panel {
+    @apply w-full max-w-lg rounded-xl border border-line bg-surface shadow-panel;
+  }
+  .tab {
+    @apply border-b-2 border-transparent px-3 py-2 text-xs font-semibold text-muted
+           hover:text-ink whitespace-nowrap;
+  }
+  .tab[aria-selected="true"] { @apply border-forest text-forest; }
+
+  .skeleton { @apply animate-pulse rounded-md bg-surface-2; }
+  .mono { font-family: var(--font-mono, "JetBrains Mono", Consolas, monospace); @apply text-xs; }
+  .prose-note { @apply text-xs text-muted leading-relaxed; }
+  .divider { @apply border-t border-line; }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; }
+}
+
+/* MapLibre controls sit under the fixed header; keep them visually light. */
+.maplibregl-ctrl-group { border-radius: 8px !important; box-shadow: 0 1px 3px rgba(0,0,0,.15) !important; }
+.maplibregl-ctrl-attrib { font-size: 10px !important; }
