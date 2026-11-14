@@ -81,6 +81,10 @@ class Settings:
             "http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173",
         ).split(",") if o.strip()
     )
+    cors_origin_regex: str | None = os.environ.get(
+        "BHUSHAKTI_CORS_ORIGIN_REGEX",
+        r"^https://.*\.onrender\.com$",
+    )
     # Weather / terrain ingestion
     # auto|live|simulated. DEMO defaults to simulated rainfall so the rainy-season
     # workflow can be exercised; every value is labelled SIMULATED in the UI.

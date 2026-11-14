@@ -1,0 +1,66 @@
+# ==============================================================================
+# BHUSHAKTI AI — Infrastructure as Code (Render Blueprint)
+# AI-Powered Landslide Early Warning & Operational Decision-Support System
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. FastAPI Backend Web Service
+  # ----------------------------------------------------------------------------
+  - type: web
+    name: bhushakti-backend
+    runtime: python
+    plan: free
+    region: oregon
+    autoDeploy: true
+    buildCommand: pip install --upgrade pip && pip install -r backend/requirements.txt
+    startCommand: python -m uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: BHUSHAKTI_ENV
+        value: demo
+      - key: BHUSHAKTI_DEMO_MODE
+        value: "true"
+      - key: BHUSHAKTI_SECRET_KEY
+        generateValue: true
+      - key: BHUSHAKTI_SESSION_TTL_MIN
+        value: "720"
+      - key: BHUSHAKTI_WEATHER_MODE
+        value: simulated
+      - key: BHUSHAKTI_DEMO_RAINFALL
+        value: replay
+      - key: BHUSHAKTI_SEED_DEMO
+        value: "true"
+      - key: BHUSHAKTI_INGESTION_ENABLED
+        value: "true"
+      - key: BHUSHAKTI_INGESTION_ON_STARTUP
+        value: "true"
+      - key: BHUSHAKTI_CORS_ORIGIN_REGEX
+        value: "^https://.*\\.onrender\\.com$"
+      - key: BHUSHAKTI_LOG_LEVEL
+        value: INFO
+
+  # ----------------------------------------------------------------------------
+  # 2. Vite + React Frontend Static Site
+  # ----------------------------------------------------------------------------
+  - type: web
+    name: bhushakti-frontend
+    runtime: static
+    plan: free
+    region: oregon
+    autoDeploy: true
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_BASE
+        fromService:
+          type: web
+          name: bhushakti-backend
+          property: url
+    routes:
+      # Client-side routing fallback for React Single Page Application (SPA)
+      - type: rewrite
+        source: /*
+        destination: /index.html
