@@ -21,6 +21,8 @@ import { api } from "../lib/api";
 import { fmtDateTime, fmtNumber, timeAgo } from "../lib/format";
 import type { Alert, Assignment, RiskSummary, ZoneCollection } from "../lib/types";
 import { useUi } from "../store/ui";
+import { useSession } from "../store/session";
+import { ROLE_HOMES } from "../lib/roles";
 import { MapView } from "../components/MapView";
 import { ZoneDrawer } from "../components/ZoneDrawer";
 import { Card, CardHeader, EmptyState, ErrorState, Loading, PriorityBadge, RiskBadge, StateBadge, UncalibratedNote } from "../components/ui";
@@ -44,6 +46,7 @@ import {
 } from "../components/shadcn";
 
 export default function Overview() {
+  const user = useSession((s) => s.user);
   const { lowBandwidth, layers, liveStatus } = useUi((s) => ({ lowBandwidth: s.lowBandwidth, layers: s.layers, liveStatus: s.liveStatus }));
   const selectZone = useUi((s) => s.selectZone);
   const selectedZoneId = useUi((s) => s.selectedZoneId);
@@ -161,6 +164,35 @@ export default function Overview() {
           </button>
         </div>
       </div>
+
+      {/* Role Dedicated Mission Control Card */}
+      {user && ROLE_HOMES[user.role] && (
+        <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-3xl bg-forest/10 dark:bg-forest/20 border border-forest/30 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-2xl bg-forest text-white shrink-0 shadow-sm">
+              <ShieldAlert size={18} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-forest uppercase tracking-wider">
+                  {user.role_label} Operational Workspace
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-surface border border-line font-semibold">
+                  {user.districts && user.districts.length > 0 ? user.districts.join(", ") : "Statewide Scope"}
+                </span>
+              </div>
+              <p className="text-xs text-ink/80 mt-0.5">
+                {ROLE_HOMES[user.role].description}
+              </p>
+            </div>
+          </div>
+          <Link to={ROLE_HOMES[user.role].route}>
+            <ShimmerButton variant="primary" className="text-xs py-1.5 px-3.5">
+              Open {ROLE_HOMES[user.role].label} →
+            </ShimmerButton>
+          </Link>
+        </div>
+      )}
 
       {summary.error ? <ErrorState error={summary.error} onRetry={() => summary.refetch()} /> : null}
 

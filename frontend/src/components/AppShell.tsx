@@ -13,6 +13,7 @@ import { applyTheme, useUi } from "../store/ui";
 import { useFallbackPolling, useLiveUpdates } from "../hooks/useLiveUpdates";
 import { Toaster } from "./ui";
 import { BhuShaktiLogo } from "./BhuShaktiLogo";
+import { ROLE_HOMES } from "../lib/roles";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -148,6 +149,29 @@ export function AppShell() {
           </div>
 
           <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
+            {user?.role && ROLE_HOMES[user.role] && (
+              <div className="mb-2 p-2 rounded-2xl bg-forest/10 dark:bg-forest/20 border border-forest/30">
+                <div className="px-1 pb-1 text-[10px] font-bold uppercase tracking-[0.14em] text-forest">
+                  Your Primary Duty Workspace
+                </div>
+                <NavLink
+                  to={ROLE_HOMES[user.role].route}
+                  className={({ isActive }) =>
+                    clsx(
+                      "flex items-center gap-2 rounded-xl px-2.5 py-1.5 text-xs font-semibold transition-all duration-200",
+                      isActive
+                        ? "bg-forest text-white shadow-sm"
+                        : "text-ink hover:bg-forest/15"
+                    )
+                  }
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <ShieldCheck size={15} className="shrink-0 text-forest" />
+                  <span className="truncate">{ROLE_HOMES[user.role].label}</span>
+                </NavLink>
+              </div>
+            )}
+
             {items.map((group) => (
               <div key={group.group}>
                 <div className="px-2 pb-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-muted/80">{group.group}</div>

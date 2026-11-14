@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, Eye, EyeOff, Loader2, Server } from "lucide-react";
 import { api, getApiBase, setApiBase } from "../lib/api";
+import { getRoleHomeRoute, ROLE_HOMES } from "../lib/roles";
 import { useSession } from "../store/session";
 import type { User } from "../lib/types";
 import { BhuShaktiLogo, BhuShaktiLogoMark } from "../components/BhuShaktiLogo";
@@ -47,11 +48,7 @@ export default function Login() {
     try {
       const result = await api<LoginResponse>("/api/v1/auth/login", { method: "POST", json: values });
       setSession(result.token, result.user, result.permissions);
-      if (result.user.role === "citizen") {
-        navigate("/citizen", { replace: true });
-      } else {
-        navigate("/", { replace: true });
-      }
+      navigate(getRoleHomeRoute(result.user.role), { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Sign-in failed");
     }
@@ -191,23 +188,33 @@ export default function Login() {
           </div>
 
           {accounts.data ? (
-            <div className="mt-7 rounded-xl border border-line bg-surface p-3">
-              <div className="text-2xs font-semibold uppercase tracking-wide text-muted">Demonstration accounts</div>
-              <p className="mt-1 text-2xs text-muted">Password: <span className="mono">BhuShakti#2026</span></p>
-              <div className="mt-2 max-h-44 space-y-1 overflow-y-auto">
+            <div className="mt-7 rounded-xl border border-line bg-surface p-3.5 shadow-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-2xs font-bold uppercase tracking-wider text-muted">Demonstration Roles & Accounts</span>
+                <span className="text-[10px] text-muted font-mono">Password: BhuShakti#2026</span>
+              </div>
+              <p className="mt-1 text-2xs text-muted">Click any role to populate credentials and test their dedicated workspace:</p>
+              <div className="mt-2.5 max-h-56 space-y-1.5 overflow-y-auto pr-1">
                 {accounts.data.accounts.map((account) => (
                   <button
                     key={account.email}
                     type="button"
-                    className="flex w-full items-center justify-between rounded-md border border-line bg-canvas px-2 py-1.5 text-left text-xs hover:bg-surface-2"
+                    className="flex w-full items-center justify-between rounded-xl border border-line bg-canvas p-2 text-left text-xs hover:border-forest/40 hover:bg-surface-2 transition group"
                     onClick={() => { setValue("email", account.email); setValue("password", "BhuShakti#2026"); }}
                   >
-                    <span className="truncate">{account.email}</span>
-                    <span className="ml-2 shrink-0 text-2xs text-muted">{account.role}</span>
+                    <div className="min-w-0 pr-2">
+                      <div className="font-semibold text-ink group-hover:text-forest transition-colors truncate">{account.email}</div>
+                      <div className="text-[10px] text-muted truncate mt-0.5">
+                        {ROLE_HOMES[account.role]?.label ?? account.role}
+                      </div>
+                    </div>
+                    <span className="shrink-0 text-[10px] font-bold text-forest bg-forest-soft px-2 py-0.5 rounded-full border border-forest/20">
+                      {ROLE_HOMES[account.role]?.badge ?? account.role}
+                    </span>
                   </button>
                 ))}
               </div>
-              <p className="mt-2 text-2xs text-muted">Seeded demo accounts only; production uses departmental SSO.</p>
+              <p className="mt-2.5 text-2xs text-muted border-t border-line/60 pt-2">Seeded demonstration accounts only; production connects to departmental identity provider (e.g. NIC SSO).</p>
             </div>
           ) : null}
 
